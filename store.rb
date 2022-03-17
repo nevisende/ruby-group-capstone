@@ -4,6 +4,7 @@ require_relative './music_album'
 require_relative './music_genre'
 
 class Store
+
   def self.read_convert(filename)
     JSON.parse(File.read(filename))
   end
@@ -54,6 +55,23 @@ class Store
     end
   end
 
+  def self.push(item)
+    case item.class.name
+    when 'Game'
+      Helper.create_file_if_not_exist('game.json')
+      json_to_arr = read_convert('game.json')
+      json_to_arr.push({ 'multiplayer' => item.multiplayer, 'last_played_at' => item.last_played_at })
+      write_json('game.json', json_to_arr)
+    end
+  end
+
+  def list_all_genres
+    puts 'Genres'
+    @genres.each do |genre|
+      puts "Name: #{genre.name}"
+    end
+  end
+    
   def self.list_all_games
     Helper.create_file_if_not_exist('game.json')
     all_games = read_convert('game.json')
